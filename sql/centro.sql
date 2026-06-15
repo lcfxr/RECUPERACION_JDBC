@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS aulas;
+
+CREATE TABLE aulas (
+    id INTEGER PRIMARY KEY,
+    nombre TEXT NOT NULL,
+    capacidad INTEGER NOT NULL
+);
