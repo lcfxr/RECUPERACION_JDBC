@@ -1,4 +1,4 @@
-package EJ11;
+package EJ11_Ej12;
 
 public class Ej11_ProbarInsertarCategoria {
     public static void main(String[] args) {

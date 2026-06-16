@@ -1,4 +1,4 @@
-package EJ11;
+package EJ11_Ej12;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
