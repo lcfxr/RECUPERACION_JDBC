@@ -1,4 +1,4 @@
-package EJ09;
+package EJ09_Ej10;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

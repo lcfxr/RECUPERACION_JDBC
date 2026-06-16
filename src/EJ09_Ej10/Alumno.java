@@ -1,4 +1,4 @@
-package EJ09;
+package EJ09_Ej10;
 
 public class Alumno {
     private int id; 
