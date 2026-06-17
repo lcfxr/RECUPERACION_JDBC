@@ -1,14 +1,13 @@
 package EXAMEN;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class HabitacionDAO {
-    public void insertarHabitacion(Habitacion habitacion){
+    public int insertarHabitacion(Habitacion habitacion){
         String insertar="INSERT INTO habitaciones (id, numero, tipo, precio_noche, ocupada)VALUES(?,?,?,?,?);";
         try(Connection conexion=ConexionBD.conectar();
             PreparedStatement stmt=conexion.prepareStatement(insertar)){
@@ -18,10 +17,11 @@ public class HabitacionDAO {
                 stmt.setDouble(4, habitacion.getPrecio_noche());
                 stmt.setInt(5, habitacion.getOcupada());
                 int filasAfectadas=stmt.executeUpdate();
-                System.out.println("Habitaciones insertadas: " +filasAfectadas);
+                return filasAfectadas;
         }catch(SQLException e){
             System.out.println("Error de conexion");
             System.out.println(e.getMessage());
+            return 0;
         }
     }
 
@@ -29,17 +29,17 @@ public class HabitacionDAO {
         String consultar="SELECT id, numero, tipo, precio_noche, ocupada FROM habitaciones;";
         ArrayList<Habitacion>habitaciones=new ArrayList<>();
         try(Connection conexion = ConexionBD.conectar();
-            Statement stmt = conexion.createStatement();
-            ResultSet rs = stmt.executeQuery(consultar)) {
+            PreparedStatement stmt = conexion.prepareStatement(consultar);
+            ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     //PARA QUE NOS MUESTRE UN OBJETO TENEMOS QUE CREARLO
-                    habitaciones.add(new Habitacion(//AQUI SE CREA CON EL NEW HABITACION
-                        rs.getInt("id"),
-                        rs.getString("numero"),
-                        rs.getString("tipo"),
-                        rs.getDouble("precio_noche"),
-                        rs.getInt("ocupada")
-                    ));  
+                  int id = rs.getInt("id"); 
+                  String numero = rs.getString("numero"); 
+                  String tipo = rs.getString("tipo"); 
+                  double precioNoche = rs.getDouble("precio_noche");   
+                  int ocupada = rs.getInt("ocupada");
+                  Habitacion habitacion = new Habitacion(id, numero, tipo, precioNoche, ocupada);
+                  habitaciones.add(habitacion);
                 }
         } catch (SQLException e) {
             System.out.println("Error de conexion");
@@ -52,15 +52,14 @@ public class HabitacionDAO {
         try(Connection conexion = ConexionBD.conectar();
             PreparedStatement stmt = conexion.prepareStatement(buscar)) {
             stmt.setInt(1, id);
-            ResultSet rs =stmt.executeQuery();
-            if(rs.next()){
-                return new Habitacion( //NOS PASA LO MISMO QUE EL EJERCICIO ANTERIOR
-                        rs.getInt("id"),
-                        rs.getString("numero"),
-                        rs.getString("tipo"),
-                        rs.getDouble("precio_noche"),
-                        rs.getInt("ocupada")
-                );
+            try(ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String numero = rs.getString("numero");
+                    String tipo = rs.getString("tipo");
+                    double precioNoche = rs.getDouble("precio_noche");
+                    int ocupada = rs.getInt("ocupada");
+                    return new Habitacion(id, numero, tipo, precioNoche, ocupada);
+                }
             }
         } catch (SQLException e) {
             System.out.println("Error de conexion");
@@ -68,31 +67,32 @@ public class HabitacionDAO {
         }
         return null;
     }
-    public void actualizarPrecioNoche(int id, double precio_noche){
+    public int actualizarPrecioNoche(int id, double precio_noche){
         String actualizar="UPDATE habitaciones SET precio_noche=? WHERE id =?;";
         try(Connection conexion =ConexionBD.conectar();
             PreparedStatement stmt = conexion.prepareStatement(actualizar)) {
-                stmt.setInt(1, id);
-                stmt.setDouble(4, precio_noche);
+                stmt.setInt(2, id);
+                stmt.setDouble(1, precio_noche);
                 int filasAfectadas=stmt.executeUpdate();
-                System.out.println("Habitaciones actualizadas: "+filasAfectadas);
+                return filasAfectadas;
         } catch (SQLException e) {
             System.out.println("Error de conexion");
             System.out.println(e.getMessage());
         }
+        return 0;
     }
-    public void eliminarHabitacion(int id){
+    public int eliminarHabitacion(int id){
         String eliminar ="DELETE FROM habitaciones WHERE id=?;";
         try(Connection conexion = ConexionBD.conectar();
             PreparedStatement stmt = conexion.prepareStatement(eliminar)) {
                 stmt.setInt(1, id);
                 int filasAfectadas=stmt.executeUpdate();
-                System.out.println("Habitaciones eliminadas: " +filasAfectadas);
-            
+                return filasAfectadas;
         } catch (SQLException e) {
             System.out.println("Error de conexion");
             System.out.println(e.getMessage());
         }
+        return 0;
     }
     
 }

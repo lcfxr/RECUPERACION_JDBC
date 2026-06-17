@@ -19,41 +19,47 @@ public class ProgramaPrincipal {
 
         System.out.println("---LISTADO DE HABITACIONES---");
         ArrayList<Habitacion>imprimir=hdao.obtenerHabitacion();
-        for(Habitacion ver: imprimir){
-            System.out.println(ver);
+        mostrarHabitaciones(imprimir);
+
+        System.out.println("Resultado de la búsqueda de la habitación 2:");
+        Habitacion habitacionEncontrada = hdao.buscarHabitacion(2);
+        if (habitacionEncontrada != null) {
+            System.out.println("Habitación encontrada: " + habitacionEncontrada);
+        } else {
+            System.out.println("Habitación no encontrada.");
         }
-        Habitacion encontrar =hdao.buscarHabitacion(2);
-        if(encontrar==null){
-            System.out.println("Habitacion no encontrada");
-        }else{
-             System.out.println(encontrar);
-            }
-        }
-        //EN ESTA PARTE NO SABRIA COMO HACER EL IF PARA SABER SI ESTAN ACTUALIZADAS/ELIMINADAS O NO
-        /*int actualizar=hdao.actualizarPrecioNoche(1, 60.0);
-        if(actualizar=null){
-            System.out.println("No se ha podido actualizar la habitacion");
-        }else{
-             for (Habitacion h : habitaciones){
-                System.out.println(h);
-            }
-        }
-        int eliminar=hdao.eliminarHabitacion(4);
-        if(eliminar=null){
-            System.out.println("No se pudo eliminar la habitacion");
-        }else{
-            for (Habitacion h : habitaciones){
-                System.out.println(h);
-            }
-        }*/
-        ReservaDAO rdao = new ReservaDAO();
+
+        int filasActualizadas=hdao.actualizarPrecioNoche(1, 60.0);
+        System.out.println("Filas actualizadas: " + filasActualizadas);
+        int filasEliminadas=hdao.eliminarHabitacion(4);
+        System.out.println("Filas eliminadas: " + filasEliminadas);
+
+        ReservaDAO rdao=new ReservaDAO();
         Reserva reserva = new Reserva(1, 2, "Miryam Rodriguez", "2026-06-23", 3, 225.0);
-        rdao.registrarReserva(reserva); //NO SE DONDE ESTA EL ERROR AQUI
+        boolean registrarReserva=rdao.registrarReserva(reserva);
+        if (registrarReserva) {
+            System.out.println("Reserva registrada correctamente.");
+        } else {
+            System.out.println("Error al registrar la reserva.");
+        }   
 
         System.out.println("---LISTADO FINAL DE HABITACIONES---");
-        for (Habitacion h : habitacion){
-                System.out.println(h);
-            }
+        ArrayList<Habitacion>habitacionesFinales=hdao.obtenerHabitacion();
+        mostrarHabitaciones(habitacionesFinales);
+    }   
+
+        private static void mostrarHabitaciones(ArrayList<Habitacion> habitaciones) { 
+            for (Habitacion habitacion : habitaciones) { 
+                mostrarHabitacion(habitacion); 
+            } 
+        } 
+        private static void mostrarHabitacion(Habitacion habitacion) { 
+            String estado; if (habitacion.getOcupada() == 1) { 
+                estado = "Ocupada"; 
+            } else { 
+                estado = "Libre"; 
+            } 
+            System.out.println( habitacion.getId() + " - " + habitacion.getNumero() + " - " + habitacion.getTipo() + " - " + habitacion.getPrecio_noche() + " € - " + estado );
 
 
 
